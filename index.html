@@ -17,21 +17,40 @@
 <body>
 
     <div class="controls">
-        <button class="btn" onclick="getLocation()">📍 Location</button>
         <button class="btn" onclick="drawLine()">➖ Line</button>
         <button class="btn" onclick="drawPolygon()">⬛ Polygon</button>
+        <button class="btn" onclick="stopDrawing()">🚫 Stop Drawing</button>
         <button class="btn" onclick="undoLast()">↩ Undo</button>
     </div>
 
+    <button class="btn1" onclick="getLocation()">
+        <img src="locate.png" alt="location image">
+    </button>
+
     <div id="map"></div>
 
-    <!-- Leaflet JS -->
+    
+    <div id="infoPanel">
+    <h3>Details</h3>
+
+    <label>ID</label>
+    <input type="text" id="mapId" placeholder="Enter ID">
+
+    <label>Landmark</label>
+    <input type="text" id="landmark" placeholder="Enter landmark">
+
+    <label>Area (km²)</label>
+    <input type="text" id="area" readonly>
+
+    <label>Length (km)</label>
+    <input type="text" id="length" readonly>
+
+    <button id="submitBtn">Submit</button>
+</div>
+
+    <script src="https://unpkg.com/leaflet-geometryutil"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-    <!-- Leaflet Draw JS -->
     <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
-
-    <!-- Custom JS -->
     <script src="script.js"></script>
 
 </body>
