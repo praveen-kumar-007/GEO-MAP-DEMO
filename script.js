@@ -8,6 +8,7 @@ let marker = null;
 let savedData = [];
 let selectedLayer = null;
 let currentShapeType = "";
+let coords = [];
 
 // Base map
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -74,6 +75,17 @@ map.on(L.Draw.Event.CREATED, function (e) {
 
   drawnItems.addLayer(layer);
   layers.push(layer);
+
+
+  // 🔥 ADD THIS PART (IMPORTANT)
+  if (e.layerType === "polygon") {
+    coords = layer.getLatLngs()[0].map(p => [p.lat, p.lng]);
+  }
+
+  if (e.layerType === "polyline") {
+    coords = layer.getLatLngs().map(p => [p.lat, p.lng]);
+  }
+
 
   // Shape type
   currentShapeType = e.layerType === "polygon" ? "Polygon" : "Straightline";
@@ -154,16 +166,17 @@ function stopDrawing() {
   }
 }
 
- //SUBMIT 
-document.getElementById("submitBtn").onclick = function () {
+ 
+document.getElementById("submitBtn").onclick = async function () {
 
   const data = {
     placeName: document.getElementById("placeName").value,
     roadName: document.getElementById("roadName").value,
     landmark: document.getElementById("landmark").value,
-    shapeType: document.getElementById("shapeType").value ,
+    shapeType: document.getElementById("shapeType").value,
     length: document.getElementById("length").value || null,
-    area: document.getElementById("area").value || null
+    area: document.getElementById("area").value || null,
+    coordinates: coords   
   };
 
   if (!data.placeName || !data.roadName || !data.landmark) {
@@ -171,18 +184,33 @@ document.getElementById("submitBtn").onclick = function () {
     return;
   }
 
-  savedData.push(data);
+  try {
+    const res = await fetch("http://localhost:5000/api/features/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
 
-  console.log("Final Data:", savedData);
+    const result = await res.json();
 
-  alert("Data Stored Successfully ✅");
+    console.log("Saved to DB:", result);
+
+    alert("Data Stored in Database ✅");
+
+  } catch (error) {
+    console.error(error);
+    alert("Error saving data ❌");
+  }
 
   // Reset form
   document.getElementById("placeName").value = "";
   document.getElementById("roadName").value = "";
   document.getElementById("landmark").value = "";
+   
 
-  // Close panel
+  coords = [];
   document.getElementById("infoPanel").classList.remove("show");
   document.body.classList.remove("blur-active");
 };
