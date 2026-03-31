@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Map with Drawing</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="controls">
+    <button class="btn" onclick="drawLine()">➖ Line</button>
+    <button class="btn" onclick="drawPolygon()">⬛ Polygon</button>
+    <button class="btn" onclick="stopDrawing()">🚫 Stop</button>
+    <button class="btn" onclick="undoLast()">↩ Undo</button>
+  </div>
+
+  <button class="btn1" onclick="getLocation()">
+    <img src="locate.png" alt="location">
+  </button>
+
+  <div id="map"></div>
+
+  
+<div id="infoPanel">
+  <h3>Details</h3>
+
+  <label>Place Name</label>
+  <input type="text" id="placeName" placeholder="Enter place">
+
+  <label>Road Name</label>
+  <input type="text" id="roadName" placeholder="Enter road">
+
+  <label>Landmark</label>
+  <input type="text" id="landmark" placeholder="Enter landmark">
+
+  <label>Shape Type</label>
+<input type="text" id="shapeType" readonly>
+
+
+  <label>Area (km²)</label>
+  <input type="text" id="area" readonly>
+
+  <label>Length (km)</label>
+  <input type="text" id="length" readonly>
+
+  <button id="submitBtn">Submit</button>
+</div>
+  <script src="https://unpkg.com/leaflet-geometryutil"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+  <script src="script.js"></script>
+
+</body>
+
+</html>
