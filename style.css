@@ -21,10 +21,88 @@ body {
   background: #007bff;
   color: white;
   border: none;
-  cursor: pointer;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .btn:hover {
   background: #0056b3;
+}
+
+/* Location Button */
+.btn1 {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  background: #ffffff;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transition: all 0.2s ease;
+}
+
+.btn1 img {
+  width: 26px;
+  height: 26px;
+}
+
+.btn1:hover {
+  transform: scale(1.1);
+  background: #f1f1f1;
+}
+
+.btn1:active {
+  transform: scale(0.95);
+}
+
+.custom-dot {
+  background-color: black;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+}
+
+#infoPanel {
+  position: fixed;
+  top: 50%;
+  right: -300px;
+  transform: translateY(-50%);
+  width: 250px;
+  padding: 15px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  border-radius: 10px;
+  transition: 0.3s;
+  z-index: 1000;
+}
+
+#infoPanel.show {
+  right: 20px;
+}
+
+#infoPanel input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 6px;
+}
+#infoPanel button {
+  width: 100%;
+  padding: 8px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#infoPanel button:hover {
+  background: #218838;
 }
