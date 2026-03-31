@@ -2,56 +2,58 @@
 <html>
 
 <head>
-    <title>Map with Drawing</title>
+  <title>Map with Drawing</title>
 
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
 
-    <!-- Leaflet Draw CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="controls">
-        <button class="btn" onclick="drawLine()">➖ Line</button>
-        <button class="btn" onclick="drawPolygon()">⬛ Polygon</button>
-        <button class="btn" onclick="stopDrawing()">🚫 Stop Drawing</button>
-        <button class="btn" onclick="undoLast()">↩ Undo</button>
-    </div>
+  <div class="controls">
+    <button class="btn" onclick="drawLine()">➖ Line</button>
+    <button class="btn" onclick="drawPolygon()">⬛ Polygon</button>
+    <button class="btn" onclick="stopDrawing()">🚫 Stop</button>
+    <button class="btn" onclick="undoLast()">↩ Undo</button>
+  </div>
 
-    <button class="btn1" onclick="getLocation()">
-        <img src="locate.png" alt="location image">
-    </button>
+  <button class="btn1" onclick="getLocation()">
+    <img src="locate.png" alt="location">
+  </button>
 
-    <div id="map"></div>
+  <div id="map"></div>
 
-    
-    <div id="infoPanel">
-    <h3>Details</h3>
+  
+<div id="infoPanel">
+  <h3>Details</h3>
 
-    <label>ID</label>
-    <input type="text" id="mapId" placeholder="Enter ID">
+  <label>Place Name</label>
+  <input type="text" id="placeName" placeholder="Enter place">
 
-    <label>Landmark</label>
-    <input type="text" id="landmark" placeholder="Enter landmark">
+  <label>Road Name</label>
+  <input type="text" id="roadName" placeholder="Enter road">
 
-    <label>Area (km²)</label>
-    <input type="text" id="area" readonly>
+  <label>Landmark</label>
+  <input type="text" id="landmark" placeholder="Enter landmark">
 
-    <label>Length (km)</label>
-    <input type="text" id="length" readonly>
+  <label>Shape Type</label>
+<input type="text" id="shapeType" readonly>
 
-    <button id="submitBtn">Submit</button>
+
+  <label>Area (km²)</label>
+  <input type="text" id="area" readonly>
+
+  <label>Length (km)</label>
+  <input type="text" id="length" readonly>
+
+  <button id="submitBtn">Submit</button>
 </div>
-
-    <script src="https://unpkg.com/leaflet-geometryutil"></script>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
-    <script src="script.js"></script>
+  <script src="https://unpkg.com/leaflet-geometryutil"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+  <script src="script.js"></script>
 
 </body>
 

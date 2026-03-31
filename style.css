@@ -1,3 +1,4 @@
+
 body {
   margin: 0;
 }
@@ -7,6 +8,7 @@ body {
   width: 100%;
 }
 
+/* Controls */
 .controls {
   position: absolute;
   top: 10px;
@@ -29,80 +31,136 @@ body {
   background: #0056b3;
 }
 
-/* Location Button */
+ /* Location button  */
 .btn1 {
   position: fixed;
   bottom: 20px;
   left: 20px;
   width: 50px;
   height: 50px;
-  background: #ffffff;
-  border: none;
+  background: white;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   z-index: 1000;
-  transition: all 0.2s ease;
 }
 
 .btn1 img {
   width: 26px;
-  height: 26px;
 }
 
-.btn1:hover {
-  transform: scale(1.1);
-  background: #f1f1f1;
-}
 
-.btn1:active {
-  transform: scale(0.95);
-}
-
-.custom-dot {
-  background-color: black;
-  border: 2px solid white;
-  border-radius: 50%;
-  width: 8px;
-  height: 8px;
-}
 
 #infoPanel {
   position: fixed;
-  top: 50%;
-  right: -300px;
-  transform: translateY(-50%);
-  width: 250px;
-  padding: 15px;
-  background: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  border-radius: 10px;
-  transition: 0.3s;
-  z-index: 1000;
+  top: 0;
+  right: -350px;
+  width: 330px;
+  height: 100vh;
+
+  padding: 20px;
+
+  background: linear-gradient(145deg, #f8fbff, #e9f1fb);
+  box-shadow: -8px 0 30px rgba(0,0,0,0.15);
+  border-radius: 20px 0 0 20px;
+
+  transition: right 0.4s ease;
+  z-index: 999999;
+
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* 🔥 scroll fix */
 }
 
 #infoPanel.show {
-  right: 20px;
+  right: 0;
 }
 
+/* Title */
+#infoPanel h3 {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+/* Labels */
+#infoPanel label {
+  font-weight: 600;
+  color: #34495e;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* Inputs */
 #infoPanel input {
   width: 100%;
-  margin-bottom: 10px;
-  padding: 6px;
-}
-#infoPanel button {
-  width: 100%;
-  padding: 8px;
-  background: #28a745;
-  color: white;
+  margin-top: 5px;
+  margin-bottom: 8px;
+  padding: 10px;
+
+  border-radius: 12px;
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
+
+  background: #ffffff;
+
+  box-shadow: inset 3px 3px 6px #d9e2ec,
+              inset -3px -3px 6px #ffffff;
+
+  font-size: 14px;
 }
 
+/* Focus */
+#infoPanel input:focus {
+  outline: none;
+  box-shadow: 0 0 6px rgba(52,152,219,0.4);
+}
+
+/* Readonly */
+#infoPanel input[readonly] {
+  background: #eef3f9;
+  font-weight: 600;
+}
+
+/* Button */
+#infoPanel button {
+  margin-top: 15px;
+  padding: 12px;
+
+  border-radius: 12px;
+  border: none;
+
+  font-size: 16px;
+  font-weight: bold;
+
+  background: linear-gradient(135deg, #00c853, #00e676);
+  color: white;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+/* Hover */
 #infoPanel button:hover {
-  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,200,83,0.4);
+}
+/* 🔥 BLUR ONLY MAP TILES */
+.blur-active .leaflet-tile-pane {
+  filter: blur(6px);
+}
+
+/* KEEP SHAPE CLEAR */
+.leaflet-overlay-pane {
+  filter: none !important;
+}
+
+/* Blur controls */
+.blur-active .controls,
+.blur-active .btn1 {
+  filter: blur(6px);
+  pointer-events: none;
 }

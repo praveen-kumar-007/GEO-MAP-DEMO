@@ -1,4 +1,4 @@
-// Initialize map
+
 const map = L.map("map").setView([22.5726, 88.3639], 13);
 
 // Global variables
@@ -6,68 +6,58 @@ let currentDrawer = null;
 let layers = [];
 let marker = null;
 let savedData = [];
+let selectedLayer = null;
+let currentShapeType = "";
 
 // Base map
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
 }).addTo(map);
 
-// Drawing storage
+// Drawing Storage
 const drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
-// Custom dot
-const customDot = new L.DivIcon({
-  className: "custom-dot",
-  iconSize: [8, 8]
-});
 
-// Get user location
+// Get User LOCATION 
 function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
+  navigator.geolocation.getCurrentPosition((pos) => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
 
-      map.setView([lat, lng], 15);
+    map.setView([lat, lng], 15);
 
-      if (marker) map.removeLayer(marker);
+    if (marker) map.removeLayer(marker);
 
-      marker = L.marker([lat, lng])
-        .addTo(map)
-        .bindPopup("You are here")
-        .openPopup();
-    });
-  }
+    marker = L.marker([lat, lng])
+      .addTo(map)
+      .bindPopup("You are here")
+      .openPopup();
+  });
 }
 
-// Draw line
+// DRAW LINE 
 function drawLine() {
   document.getElementById("length").value = "";
-
-  currentDrawer = new L.Draw.Polyline(map, {
-    icon: customDot
-  });
+  document.getElementById("area").value = "";
+  currentDrawer = new L.Draw.Polyline(map);
   currentDrawer.enable();
 }
 
-// Draw polygon
+// DRAW POLYGON 
 function drawPolygon() {
   document.getElementById("area").value = "";
-
-  currentDrawer = new L.Draw.Polygon(map, {
-    icon: customDot
-  });
+  document.getElementById("length").value = "";
+  currentDrawer = new L.Draw.Polygon(map);
   currentDrawer.enable();
 }
 
-
+//LIVE LENGTH 
 map.on("draw:drawvertex", function (e) {
   const tempLayers = e.layers.getLayers();
-
   if (!tempLayers.length) return;
 
-  let latlngs = tempLayers.map(l => l.getLatLng());
+  const latlngs = tempLayers.map(l => l.getLatLng());
 
   let totalDistance = 0;
 
@@ -75,93 +65,124 @@ map.on("draw:drawvertex", function (e) {
     totalDistance += latlngs[i].distanceTo(latlngs[i + 1]);
   }
 
-  totalDistance = totalDistance / 1000;
-
-  document.getElementById("length").value = totalDistance.toFixed(2);
+  document.getElementById("length").value = (totalDistance / 1000).toFixed(2);
 });
 
-//Save shape & calculations
+//DRAW COMPLETE 
 map.on(L.Draw.Event.CREATED, function (e) {
   const layer = e.layer;
+
   drawnItems.addLayer(layer);
   layers.push(layer);
 
-  const panel = document.getElementById("infoPanel");
-  const areaInput = document.getElementById("area");
-  const lengthInput = document.getElementById("length");
+  // Shape type
+  currentShapeType = e.layerType === "polygon" ? "Polygon" : "Straightline";
+  document.getElementById("shapeType").value = currentShapeType;
 
-  areaInput.value = "";
-  lengthInput.value = "";
+  // Highlight selected shape
+  if (selectedLayer && selectedLayer.setStyle) {
+    selectedLayer.setStyle({ color: "blue" });
+  }
 
-  //Area calculation
+  selectedLayer = layer;
+
+  if (layer.setStyle) {
+    layer.setStyle({
+      color: "red",
+      weight: 4
+    });
+  }
+
+  document.getElementById("area").value = "";
+  document.getElementById("length").value = "";
+
+  //  Polygon → Area Calculation
   if (e.layerType === "polygon") {
     const latlngs = layer.getLatLngs()[0];
-    let area = L.GeometryUtil.geodesicArea(latlngs);
-    area = area / 1000000;
-    areaInput.value = area.toFixed(2);
+    let area = L.GeometryUtil.geodesicArea(latlngs) / 1000000;
+    document.getElementById("area").value = area.toFixed(2);
   }
 
-  // FINAL LENGTH
+  // Line → Final Length
   if (e.layerType === "polyline") {
-    let latlngs = layer.getLatLngs();
-    if (Array.isArray(latlngs[0])) 
-    {
-      latlngs = latlngs[0];
-    }
-    let totalDistance = 0;
+    const latlngs = layer.getLatLngs();
+    let total = 0;
+
     for (let i = 0; i < latlngs.length - 1; i++) {
-      totalDistance += latlngs[i].distanceTo(latlngs[i + 1]);
+      total += latlngs[i].distanceTo(latlngs[i + 1]);
     }
-    totalDistance = totalDistance / 1000;
-    lengthInput.value = totalDistance.toFixed(2);
+
+    document.getElementById("length").value = (total / 1000).toFixed(2);
   }
-  panel.classList.add("show");
+
+  // Show form + blur
+  document.getElementById("infoPanel").classList.add("show");
+  document.body.classList.add("blur-active");
 });
 
-//Undo last shape
-function undoLast() {
-  if (layers.length > 0) {
-    const last = layers.pop();
-    drawnItems.removeLayer(last);
+
+  function undoLast() {
+  if (layers.length === 0) {
+    alert("Nothing to undo");
+    return;
   }
+
+  const last = layers.pop();
+
+  // Remove from map
+  drawnItems.removeLayer(last);
+
+  // Reset selected layer if needed
+  if (selectedLayer === last) {
+    selectedLayer = null;
+  }
+
+  // Clear form values
+  document.getElementById("area").value = "";
+  document.getElementById("length").value = "";
+  document.getElementById("shapeType").value = "";
+
+  // Close panel
+  document.getElementById("infoPanel").classList.remove("show");
+  document.body.classList.remove("blur-active");
 }
 
-// Stop drawing
+//STOP DRAWING
 function stopDrawing() {
   if (currentDrawer) {
-    try {
-      currentDrawer.completeShape();
-    } catch (e) {}
     currentDrawer.disable();
   }
 }
 
-// Submit data
+ //SUBMIT 
 document.getElementById("submitBtn").onclick = function () {
 
-  const id = document.getElementById("mapId").value;
-  const landmark = document.getElementById("landmark").value;
-  const area = document.getElementById("area").value;
-  const length = document.getElementById("length").value;
+  const data = {
+    placeName: document.getElementById("placeName").value,
+    roadName: document.getElementById("roadName").value,
+    landmark: document.getElementById("landmark").value,
+    shapeType: document.getElementById("shapeType").value ,
+    length: document.getElementById("length").value || null,
+    area: document.getElementById("area").value || null
+  };
 
-  if (!id || !landmark) {
-    alert("Please fill ID and Landmark");
+  if (!data.placeName || !data.roadName || !data.landmark) {
+    alert("Please fill all fields");
     return;
   }
 
-  const data = {
-    id: id,
-    landmark: landmark,
-    area: area,
-    length: length
-  };
-
   savedData.push(data);
 
-  console.log("Saved Data:", savedData);
+  console.log("Final Data:", savedData);
 
-  alert("Data Submitted Successfully!");
+  alert("Data Stored Successfully ✅");
 
-  document.getElementById("mapId").value = "";
+  // Reset form
+  document.getElementById("placeName").value = "";
+  document.getElementById("roadName").value = "";
   document.getElementById("landmark").value = "";
+
+  // Close panel
+  document.getElementById("infoPanel").classList.remove("show");
+  document.body.classList.remove("blur-active");
 };
